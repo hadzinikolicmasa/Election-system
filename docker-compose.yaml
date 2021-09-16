@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  authenticationdatabase:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=authentication
+    volumes:
+      - volume:/var/lib/mysql
+    networks:
+      - net
+  authenticationmigration:
+    image: authenticationmigration
+    environment:
+      - DATABASE_URL=authenticationdatabase
+    networks:
+      - net
+  authentication:
+    image: authentication
+    environment:
+      - DATABASE_URL=authenticationdatabase
+    ports:
+      - 5000:5000
+    networks:
+      - net
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - net
+
+volumes:
+  volume:
+networks:
+   net:
+

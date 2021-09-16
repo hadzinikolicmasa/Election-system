@@ -1,0 +1,16 @@
+FROM python:3
+
+RUN mkdir -p /opt/src/voting
+WORKDIR /opt/src/voting
+
+COPY voting/votingStation.py ./votingStation.py
+COPY voting/votes.csv ./votes.csv
+COPY voting/configurationVoting.py ./configurationVoting.py
+COPY voting/modelsVoting.py ./modelsVoting.py
+COPY voting/requirements.txt ./requirements.txt
+COPY voting/roleCheck.py ./roleCheck.py
+
+
+RUN pip install -r ./requirements.txt
+
+ENTRYPOINT ["python", "./votingStation.py"]

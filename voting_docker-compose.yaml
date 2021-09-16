@@ -1,0 +1,80 @@
+version: '3'
+
+services:
+  votingdatabase:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=voting
+    volumes:
+      - volume2:/var/lib/mysql
+    ports:
+      - 3307:3307
+    networks:
+      - mrezaadmin
+      - mrezadaemon
+  voting:
+    image: voting
+    environment:
+      - DATABASE_URL=votingdatabase
+    ports:
+      - 5001:5001
+    networks:
+      - mrezaadmin
+  votingmigration:
+    image: votingmigration
+    environment:
+      - DATABASE_URL=votingdatabase
+    networks:
+      - mrezaadmin
+      - mrezadaemon
+  votingstation:
+    image: votingstation
+    environment:
+        - DATABASE_URL=votingdatabase
+    ports:
+        - 5002:5002
+    networks:
+      - mreza
+    deploy:
+      replicas: 3
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - mreza
+      - mrezadaemon
+  daemon:
+    image: daemon
+    environment:
+      - DATABASE_URL=votingdatabase
+    ports:
+      - 5005:5005
+    networks:
+      - mrezaadmin
+      - mrezadaemon
+  adminer1:
+    image: adminer
+    ports:
+      - 8081:8080
+    networks:
+      - mrezaadmin
+      - mrezadaemon
+
+
+
+
+volumes:
+  volume2:
+
+networks:
+  mrezaredis:
+    driver: overlay
+  mreza:
+    driver: overlay
+  mrezaadmin:
+    driver: overlay
+  mrezadaemon:
+    driver: overlay
+
